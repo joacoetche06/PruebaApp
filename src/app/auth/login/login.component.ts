@@ -22,9 +22,8 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
   standalone: true,
+  host: { class: 'ion-page' }, // <-- AGREGAR ESTA LÍNEA
   imports: [
     IonContent,
     IonItem,
@@ -37,6 +36,8 @@ import { CommonModule } from '@angular/common';
     CommonModule,
     RouterLink,
   ],
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
   form: FormGroup;
