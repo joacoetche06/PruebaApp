@@ -9,6 +9,27 @@ import { Router } from '@angular/router';
 export class AuthService {
   constructor(private supabase: SupabaseService, private router: Router) {}
 
+  async signUp(email: string, password: string): Promise<any> {
+    try {
+      console.log('Starting registration for:', email);
+
+      const { data, error } = await this.supabase.auth.signUp({
+        email: email.trim().toLowerCase(),
+        password: password,
+      });
+
+      if (error) {
+        console.error('Supabase signup error:', error);
+        throw error;
+      }
+
+      console.log('Registration successful:', data);
+      return data;
+    } catch (error) {
+      console.error('Auth service signup error:', error);
+      throw error;
+    }
+  }
   // Iniciar sesión con mejor manejo de errores
   async signIn(email: string, password: string): Promise<any> {
     try {

@@ -1,8 +1,14 @@
 // src/app/auth/login/login.component.ts
 import { Component, OnInit } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { SupabaseService } from '../../services/supabase.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
   IonContent,
   IonItem,
@@ -12,7 +18,6 @@ import {
   IonAlert,
   IonSpinner,
 } from '@ionic/angular/standalone';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -28,42 +33,41 @@ import { CommonModule } from '@angular/common';
     IonButton,
     IonAlert,
     IonSpinner,
-    FormsModule,
+    ReactiveFormsModule,
     CommonModule,
+    RouterLink,
   ],
 })
 export class LoginComponent implements OnInit {
-  email: string = '';
-  password: string = '';
+  form: FormGroup;
   showAlert: boolean = false;
   alertMessage: string = '';
   isLoading: boolean = false;
   connectionTested: boolean = false;
 
   constructor(
+    private fb: FormBuilder,
     private authService: AuthService,
     private supabaseService: SupabaseService,
     private router: Router
-  ) {}
+  ) {
+    this.form = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+    });
+  }
 
   async ngOnInit() {
-    console.log('Valor inicial de showAlert:', this.showAlert);
-
     try {
       await this.supabaseService.testConnection();
-      console.log('Connection test successful: ', this.showAlert);
       this.connectionTested = true;
     } catch (error) {
-      console.error('Login error:', error);
-      console.log('Mostrando alerta...');
-      console.log('Connection test completed with potential issues');
       this.connectionTested = true;
     }
   }
 
   async onSubmit() {
-    // Validación básica de campos
-    if (!this.email || !this.password) {
+    if (this.form.invalid) {
       this.alertMessage = 'Por favor, completa todos los campos';
       this.showAlert = true;
       return;
@@ -72,43 +76,32 @@ export class LoginComponent implements OnInit {
     this.isLoading = true;
     this.showAlert = false;
 
+    const { email, password } = this.form.value;
+
     try {
-      await this.authService.signOut();
+      // Deshabilita controles correctamente (evita binding [disabled] directo)
+      this.form.disable();
 
-      console.log('Attempting login with:', this.email);
-      const result = await this.authService.signIn(this.email, this.password);
-
-      console.log('Login successful:', result);
-
-      // Navegar a la página principal
+      const result = await this.authService.signIn(email, password);
       this.router.navigate(['/tabs/tab1']);
     } catch (error: any) {
-      console.error('Login error details:', error);
-
-      if (error.name === 'NavigatorLockAcquireTimeoutError') {
-        this.alertMessage =
-          'Error de sesión. Por favor, cierra otras pestañas de la aplicación e intenta nuevamente.';
-      } else if (error.message?.includes('Invalid login credentials')) {
-        this.alertMessage =
-          'Credenciales incorrectas. Verifica tu email y contraseña.';
-      } else if (error.message?.includes('Email not confirmed')) {
-        this.alertMessage =
-          'Por favor, confirma tu email antes de iniciar sesión.';
-      } else if (error.message?.includes('Network error')) {
-        this.alertMessage = 'Error de conexión. Verifica tu internet.';
-      } else {
-        this.alertMessage =
-          error.message || 'Error al iniciar sesión. Intenta nuevamente.';
-      }
-
+      this.alertMessage =
+        error.message || 'Error al iniciar sesión. Intenta nuevamente.';
       this.showAlert = true;
     } finally {
       this.isLoading = false;
+      this.form.enable();
     }
   }
 
+  // Navegación desde enlaces que blurea el elemento activo para evitar aria-hidden/focus issue
+  goToRegister(event: Event) {
+    event.preventDefault();
+    (document.activeElement as HTMLElement | null)?.blur();
+    this.router.navigate(['/register']);
+  }
+
   onAlertDismiss() {
-    console.log('Alert dismissed, setting showAlert to false');
     this.showAlert = false;
   }
 }

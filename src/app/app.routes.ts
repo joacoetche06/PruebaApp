@@ -5,10 +5,24 @@ import { TabsComponent } from './tabs/tabs.component';
 import { AuthGuard } from './guard/auth.guard';
 
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./auth/login/login.component').then((m) => m.LoginComponent),
+    pathMatch: 'full',
+  },
+  {
+    path: 'register',
+    loadComponent: () =>
+      import('./auth/register/register.component').then(
+        (m) => m.RegisterComponent
+      ),
+    pathMatch: 'full',
+  },
   {
     path: 'tabs',
-    component: TabsComponent,
+    loadComponent: () =>
+      import('./tabs/tabs.component').then((m) => m.TabsComponent),
     canActivate: [AuthGuard],
     children: [
       {
@@ -34,6 +48,8 @@ export const routes: Routes = [
       },
     ],
   },
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: '**', redirectTo: '/login' },
+  {
+    path: '**',
+    redirectTo: '/login',
+  },
 ];

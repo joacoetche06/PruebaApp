@@ -3,42 +3,43 @@
   <div class="login-container">
     <h2>Iniciar Sesión</h2>
 
-    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <ion-item>
         <ion-label position="stacked">Email</ion-label>
         <ion-input
           type="email"
-          [(ngModel)]="email"
-          name="email"
-          required
+          formControlName="email"
+          autocomplete="email"
           placeholder="tu@email.com"
-          [disabled]="isLoading"
-        >
-        </ion-input>
+        ></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Contraseña</ion-label>
         <ion-input
           type="password"
-          [(ngModel)]="password"
-          name="password"
-          required
+          formControlName="password"
+          autocomplete="current-password"
           placeholder="Tu contraseña"
-          [disabled]="isLoading"
-        >
-        </ion-input>
+        ></ion-input>
       </ion-item>
 
       <ion-button
         type="submit"
         expand="block"
         class="ion-margin-top"
-        [disabled]="isLoading || !email || !password"
+        [disabled]="isLoading || form.invalid"
       >
         <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
         <span *ngIf="!isLoading">Iniciar Sesión</span>
       </ion-button>
+
+      <div class="register-link ion-text-center">
+        <p>
+          ¿No tienes cuenta?
+          <a href="#" (click)="goToRegister($event)">Regístrate</a>
+        </p>
+      </div>
     </form>
 
     <ion-alert

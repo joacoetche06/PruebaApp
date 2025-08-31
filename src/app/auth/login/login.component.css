@@ -23,3 +23,13 @@ ion-spinner {
 ion-button[disabled] {
   opacity: 0.6;
 }
+
+.register-link {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.register-link a {
+  color: #c62828;
+  text-decoration: underline;
+}

@@ -15,7 +15,7 @@ import { homeOutline, listOutline, personOutline } from 'ionicons/icons';
   imports: [IonApp, IonRouterOutlet],
 })
 export class AppComponent {
-  constructor(private platform: Platform, private router: Router) {
+  constructor(private platform: Platform, public router: Router) {
     this.initialize();
     addIcons({
       'home-outline': homeOutline,
@@ -23,16 +23,20 @@ export class AppComponent {
       'person-outline': personOutline,
     });
   }
-
+  getKey(): string {
+    return this.router.url;
+  }
   async initialize() {
     await this.platform.ready();
 
     // Simula una carga o espera breve para que la UI se renderice
+    // ...existing code...
     setTimeout(async () => {
       // Oculta el splash screen de forma controlada
       await SplashScreen.hide({ fadeOutDuration: 300 });
       // Navega una vez que la transición esté completa
-      this.router.navigateByUrl('/home', { replaceUrl: true });
-    }, 500); // Espera 500ms para asegurar la transición
+      // this.router.navigateByUrl('/home', { replaceUrl: true }); // <-- Comentá o eliminá esto
+    }, 500);
   }
+  // ...existing code... }
 }

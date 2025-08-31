@@ -10,6 +10,7 @@ export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(): boolean {
+    console.log('AuthGuard: Checking authentication status');
     if (this.authService.isAuthenticated()) {
       return true;
     } else {
