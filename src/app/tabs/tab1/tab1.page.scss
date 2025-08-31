@@ -1,0 +1,58 @@
+:root {
+  --card-max-width: 720px;
+}
+
+.page-content {
+  padding: 1rem 0.6rem;
+  display: flex;
+  justify-content: center;
+}
+
+.row-center {
+  justify-content: center;
+}
+
+ion-col {
+  display: flex;
+  justify-content: center;
+}
+
+ion-card {
+  width: 100%;
+  max-width: var(--card-max-width);
+  margin: 0.6rem auto;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.buttons {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.value {
+  margin: 0.25rem 0 0.5rem;
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.small {
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+@media (min-width: 600px) {
+  .buttons {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  ion-card {
+    padding: 0.6rem;
+  }
+  .value {
+    font-size: 0.7rem;
+  }
+}
