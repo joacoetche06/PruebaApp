@@ -51,13 +51,10 @@ export class AppComponent {
   async initialize() {
     await this.platform.ready();
 
-    // Simula una carga o espera breve para que la UI se renderice
-    // ...existing code...
+    // Simplemente oculta el splash nativo después de un momento.
+    // El router se encargará de mostrar el splash web.
     setTimeout(async () => {
-      // Oculta el splash screen de forma controlada
       await SplashScreen.hide({ fadeOutDuration: 300 });
-      // Navega una vez que la transición esté completa
-      this.router.navigateByUrl('/auth/login', { replaceUrl: true }); // <-- Comentá o eliminá esto
     }, 500);
   }
   // ...existing code... }

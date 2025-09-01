@@ -2,10 +2,12 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './guard/auth.guard';
 import { AuthLayoutComponent } from './auth/layout/layout.component';
+
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'auth/login', // Redirige la raíz a la página de login
+    // CAMBIO: La ruta raíz ahora redirige directamente a la página de login.
+    redirectTo: 'auth/login',
     pathMatch: 'full',
   },
   {
