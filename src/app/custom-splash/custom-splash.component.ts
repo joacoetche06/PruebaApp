@@ -15,7 +15,7 @@ export class CustomSplashComponent implements OnInit {
   ngOnInit() {
     setTimeout(() => {
       // Navega a la página principal después de 3 segundos
-      this.router.navigateByUrl('/home', { replaceUrl: true });
+      this.router.navigateByUrl('/login', { replaceUrl: true });
     }, 3000);
   }
 }

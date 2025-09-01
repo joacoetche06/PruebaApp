@@ -1,23 +1,30 @@
 // src/app/app.routes.ts
 import { Routes } from '@angular/router';
-import { LoginComponent } from './auth/login/login.component';
-import { TabsComponent } from './tabs/tabs.component';
 import { AuthGuard } from './guard/auth.guard';
-
+import { AuthLayoutComponent } from './auth/layout/layout.component';
 export const routes: Routes = [
   {
-    path: 'login',
-    loadComponent: () =>
-      import('./auth/login/login.component').then((m) => m.LoginComponent),
+    path: '',
+    redirectTo: 'auth/login', // Redirige la raíz a la página de login
     pathMatch: 'full',
   },
   {
-    path: 'register',
-    loadComponent: () =>
-      import('./auth/register/register.component').then(
-        (m) => m.RegisterComponent
-      ),
-    pathMatch: 'full',
+    path: 'auth',
+    component: AuthLayoutComponent, // Carga el layout
+    children: [
+      {
+        path: 'login',
+        loadComponent: () =>
+          import('./auth/login/login.component').then((m) => m.LoginComponent),
+      },
+      {
+        path: 'register',
+        loadComponent: () =>
+          import('./auth/register/register.component').then(
+            (m) => m.RegisterComponent
+          ),
+      },
+    ],
   },
   {
     path: 'tabs',
@@ -43,13 +50,13 @@ export const routes: Routes = [
 
       {
         path: '',
-        redirectTo: '/tabs/tab1',
+        redirectTo: 'tab1',
         pathMatch: 'full',
       },
     ],
   },
   {
     path: '**',
-    redirectTo: '/login',
+    redirectTo: 'auth/login', // Cualquier otra cosa, a login
   },
 ];

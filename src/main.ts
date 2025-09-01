@@ -1,12 +1,15 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { provideRouter } from '@angular/router';
-import { provideIonicAngular } from '@ionic/angular/standalone'; // Importación clave
+// CAMBIO: Importa withComponentInputBinding
+import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { provideIonicAngular } from '@ionic/angular/standalone';
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideRouter(routes),
-    provideIonicAngular({}), // <-- Añade esta línea
+    // CAMBIO: Usa la configuración completa para el router
+    provideRouter(routes, withComponentInputBinding()),
+    // CAMBIO: Asegúrate que provideIonicAngular esté configurado así
+    provideIonicAngular({}),
   ],
 });

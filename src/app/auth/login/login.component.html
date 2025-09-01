@@ -1,51 +1,49 @@
 <!-- src/app/auth/login/login.component.html -->
-<ion-content class="ion-padding">
-  <div class="login-container">
-    <h2>Iniciar Sesión</h2>
+<div class="login-container">
+  <h2>Iniciar Sesión</h2>
 
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <ion-item>
-        <ion-label position="stacked">Email</ion-label>
-        <ion-input
-          type="email"
-          formControlName="email"
-          autocomplete="email"
-          placeholder="tu@email.com"
-        ></ion-input>
-      </ion-item>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <ion-item>
+      <ion-label position="stacked">Email</ion-label>
+      <ion-input
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+        placeholder="tu@email.com"
+      ></ion-input>
+    </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Contraseña</ion-label>
-        <ion-input
-          type="password"
-          formControlName="password"
-          autocomplete="current-password"
-          placeholder="Tu contraseña"
-        ></ion-input>
-      </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Contraseña</ion-label>
+      <ion-input
+        type="password"
+        formControlName="password"
+        autocomplete="current-password"
+        placeholder="Tu contraseña"
+      ></ion-input>
+    </ion-item>
 
-      <ion-button
-        type="submit"
-        expand="block"
-        class="ion-margin-top"
-        [disabled]="isLoading || form.invalid"
-      >
-        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
-        <span *ngIf="!isLoading">Iniciar Sesión</span>
-      </ion-button>
-
-      <div class="register-link ion-text-center">
-        <p>¿No tienes cuenta? <a routerLink="/register">Regístrate</a></p>
-      </div>
-    </form>
-
-    <ion-alert
-      [isOpen]="showAlert"
-      header="Error de Autenticación"
-      [message]="alertMessage"
-      [buttons]="['Entendido']"
-      (ionAlertDidDismiss)="onAlertDismiss()"
+    <ion-button
+      type="submit"
+      expand="block"
+      class="ion-margin-top"
+      [disabled]="isLoading || form.invalid"
     >
-    </ion-alert>
-  </div>
-</ion-content>
+      <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+      <span *ngIf="!isLoading">Iniciar Sesión</span>
+    </ion-button>
+
+    <div class="register-link ion-text-center">
+      <p>¿No tienes cuenta? <a routerLink="/auth/register">Regístrate</a></p>
+    </div>
+  </form>
+
+  <ion-alert
+    [isOpen]="showAlert"
+    header="Error de Autenticación"
+    [message]="alertMessage"
+    [buttons]="['Entendido']"
+    (ionAlertDidDismiss)="onAlertDismiss()"
+  >
+  </ion-alert>
+</div>

@@ -1,5 +1,5 @@
 // src/app/auth/register/register.component.ts
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -19,7 +19,10 @@ import { CommonModule } from '@angular/common';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit, OnDestroy {
+  // Implementa OnInit, OnDestroy
+  // ... tu código ...
+
   form: FormGroup;
   error: string | null = null;
   isLoading = false;
@@ -43,6 +46,9 @@ export class RegisterComponent {
     });
   }
 
+  ngOnInit() {
+    console.log('RegisterComponent: ngOnInit');
+  }
   async onSubmit(): Promise<void> {
     this.error = null;
     if (this.form.invalid) return;
@@ -62,7 +68,8 @@ export class RegisterComponent {
         'success'
       );
       (document.activeElement as HTMLElement | null)?.blur();
-      this.router.navigate(['/login']);
+      // CAMBIO: Añade /auth/ a la navegación
+      this.router.navigate(['/auth/login']);
     } catch (error: any) {
       this.error = error.message || 'Error en el registro';
     } finally {
@@ -71,9 +78,7 @@ export class RegisterComponent {
     }
   }
 
-  goToLogin(event: Event) {
-    event.preventDefault();
-    (document.activeElement as HTMLElement | null)?.blur();
-    this.router.navigate(['/login']);
+  ngOnDestroy() {
+    console.log('RegisterComponent: ngOnDestroy');
   }
 }

@@ -3,9 +3,16 @@
 import { Component } from '@angular/core';
 import { IonApp, IonRouterOutlet, Platform } from '@ionic/angular/standalone';
 import { SplashScreen } from '@capacitor/splash-screen';
-import { Router } from '@angular/router';
+import {
+  Router,
+  NavigationStart,
+  NavigationEnd,
+  NavigationCancel,
+  NavigationError,
+} from '@angular/router';
 import { addIcons } from 'ionicons';
 import { homeOutline, listOutline, personOutline } from 'ionicons/icons';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -22,10 +29,25 @@ export class AppComponent {
       'list-outline': listOutline,
       'person-outline': personOutline,
     });
+
+    // --- INICIO DEL CÓDIGO DE DEPURACIÓN ---
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        console.log('Router Event: NavigationStart', event.url);
+      }
+      if (event instanceof NavigationEnd) {
+        console.log('Router Event: NavigationEnd', event.url);
+      }
+      if (event instanceof NavigationCancel) {
+        console.log('Router Event: NavigationCancel', event);
+      }
+      if (event instanceof NavigationError) {
+        console.log('Router Event: NavigationError', event);
+      }
+    });
+    // --- FIN DEL CÓDIGO DE DEPURACIÓN ---
   }
-  getKey(): string {
-    return this.router.url;
-  }
+
   async initialize() {
     await this.platform.ready();
 
@@ -35,7 +57,7 @@ export class AppComponent {
       // Oculta el splash screen de forma controlada
       await SplashScreen.hide({ fadeOutDuration: 300 });
       // Navega una vez que la transición esté completa
-      // this.router.navigateByUrl('/home', { replaceUrl: true }); // <-- Comentá o eliminá esto
+      this.router.navigateByUrl('/auth/login', { replaceUrl: true }); // <-- Comentá o eliminá esto
     }, 500);
   }
   // ...existing code... }

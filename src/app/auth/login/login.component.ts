@@ -1,5 +1,5 @@
 // src/app/auth/login/login.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -25,7 +25,6 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   host: { class: 'ion-page' }, // <-- AGREGAR ESTA LÍNEA
   imports: [
-    IonContent,
     IonItem,
     IonLabel,
     IonInput,
@@ -39,7 +38,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   form: FormGroup;
   showAlert: boolean = false;
   alertMessage: string = '';
@@ -62,6 +61,7 @@ export class LoginComponent implements OnInit {
     try {
       await this.supabaseService.testConnection();
       this.connectionTested = true;
+      console.log('LoginComponent: ngOnInit');
     } catch (error) {
       this.connectionTested = true;
     }
@@ -95,14 +95,11 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  // Navegación desde enlaces que blurea el elemento activo para evitar aria-hidden/focus issue
-  goToRegister(event: Event) {
-    event.preventDefault();
-    (document.activeElement as HTMLElement | null)?.blur();
-    this.router.navigate(['/register']);
-  }
-
   onAlertDismiss() {
     this.showAlert = false;
+  }
+
+  ngOnDestroy() {
+    console.log('LoginComponent: ngOnDestroy');
   }
 }

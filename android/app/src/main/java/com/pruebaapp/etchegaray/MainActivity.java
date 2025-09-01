@@ -1,4 +1,4 @@
-package com.example.app;
+package com.pruebaapp.etchegaray;
 
 import com.getcapacitor.BridgeActivity;
 
