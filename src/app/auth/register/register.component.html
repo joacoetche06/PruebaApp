@@ -1,78 +1,99 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="registro-container">
-  <label for="email">Correo electrónico <span class="required">*</span></label>
-  <input
-    type="email"
-    id="email"
-    formControlName="email"
-    autocomplete="email"
-    placeholder="ejemplo@correo.com"
-    [class.invalid]="form.get('email')?.invalid && form.get('email')?.touched"
-  />
-  <div
-    *ngIf="form.get('email')?.invalid && form.get('email')?.touched"
-    class="error-msg"
-  >
-    <div *ngIf="form.get('email')?.errors?.['required']">
-      El correo es obligatorio.
-    </div>
-    <div *ngIf="form.get('email')?.errors?.['email']">
-      Formato de correo no válido.
-    </div>
-  </div>
+<div class="login-container">
+  <h2>Registro</h2>
 
-  <label for="password">Contraseña <span class="required">*</span></label>
-  <input
-    type="password"
-    id="password"
-    formControlName="password"
-    autocomplete="new-password"
-    placeholder="********"
-  />
-  <div
-    *ngIf="form.get('password')?.invalid && form.get('password')?.touched"
-    class="error-msg"
-  >
-    <div *ngIf="form.get('password')?.errors?.['required']">
-      La contraseña es obligatoria.
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <ion-item>
+      <ion-label position="stacked">Correo electrónico</ion-label>
+      <ion-input
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+        placeholder="ejemplo@correo.com"
+      ></ion-input>
+    </ion-item>
+    <div
+      *ngIf="form.get('email')?.invalid && form.get('email')?.touched"
+      class="error-msg"
+    >
+      <div *ngIf="form.get('email')?.errors?.['required']">
+        El correo es obligatorio.
+      </div>
+      <div *ngIf="form.get('email')?.errors?.['email']">
+        Formato de correo no válido.
+      </div>
     </div>
-    <div *ngIf="form.get('password')?.errors?.['pattern']">
-      Debe tener al menos 8 caracteres, una mayúscula y un número.
+
+    <ion-item>
+      <ion-label position="stacked">Contraseña</ion-label>
+      <ion-input
+        type="password"
+        formControlName="password"
+        autocomplete="new-password"
+        placeholder="********"
+      ></ion-input>
+    </ion-item>
+    <div
+      *ngIf="form.get('password')?.invalid && form.get('password')?.touched"
+      class="error-msg"
+    >
+      <div *ngIf="form.get('password')?.errors?.['required']">
+        La contraseña es obligatoria.
+      </div>
+      <div *ngIf="form.get('password')?.errors?.['pattern']">
+        Debe tener al menos 8 caracteres, una mayúscula y un número.
+      </div>
     </div>
-  </div>
 
-  <label for="confirmPassword"
-    >Confirmar contraseña <span class="required">*</span></label
-  >
-  <input
-    type="password"
-    id="confirmPassword"
-    formControlName="confirmPassword"
-    autocomplete="new-password"
-    placeholder="********"
-  />
-  <div
-    *ngIf="
-      form.get('confirmPassword')?.invalid &&
-      form.get('confirmPassword')?.touched
-    "
-    class="error-msg"
-  >
-    Debes confirmar tu contraseña.
-  </div>
-  <div
-    *ngIf="
-      form.get('confirmPassword')?.touched &&
-      form.get('password')?.value !== form.get('confirmPassword')?.value
-    "
-    class="error-msg"
-  >
-    Las contraseñas no coinciden.
-  </div>
+    <ion-item>
+      <ion-label position="stacked">Confirmar contraseña</ion-label>
+      <ion-input
+        type="password"
+        formControlName="confirmPassword"
+        autocomplete="new-password"
+        placeholder="********"
+      ></ion-input>
+    </ion-item>
+    <div
+      *ngIf="
+        form.get('confirmPassword')?.touched &&
+        form.get('password')?.value !== form.get('confirmPassword')?.value
+      "
+      class="error-msg"
+    >
+      Las contraseñas no coinciden.
+    </div>
+    <div
+      *ngIf="
+        form.get('confirmPassword')?.invalid &&
+        form.get('confirmPassword')?.touched &&
+        form.get('confirmPassword')?.errors?.['required']
+      "
+      class="error-msg"
+    >
+      Debes confirmar tu contraseña.
+    </div>
 
-  <div *ngIf="error" class="error-msg">{{ error }}</div>
+    <ion-button
+      type="submit"
+      expand="block"
+      class="ion-margin-top"
+      [disabled]="isLoading || form.invalid"
+    >
+      <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+      <span *ngIf="!isLoading">Registrarse</span>
+    </ion-button>
 
-  <button type="submit" [disabled]="form.invalid">Registrarse</button>
-  <p class="register-link">
-    ¿Ya tienes cuenta? <a routerLink="/auth/login">Inicia Sesión</a>
-  </p>
-</form>
+    <div class="register-link ion-text-center">
+      <p>¿Ya tienes cuenta? <a routerLink="/auth/login">Inicia Sesión</a></p>
+    </div>
+  </form>
+
+  <ion-alert
+    [isOpen]="showAlert"
+    header="Error de Registro"
+    [message]="alertMessage"
+    [buttons]="['Entendido']"
+    (ionAlertDidDismiss)="onAlertDismiss()"
+  >
+  </ion-alert>
+</div>

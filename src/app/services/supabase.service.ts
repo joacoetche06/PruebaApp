@@ -24,7 +24,9 @@ export class SupabaseService {
     );
     console.log('Supabase initialized with URL:', environment.supabaseUrl);
   }
-
+  get client() {
+    return this.supabase;
+  }
   get auth() {
     return this.supabase.auth;
   }

@@ -1,5 +1,5 @@
 // src/app/auth/register/register.component.ts
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ApplicationRef } from '@angular/core'; // Importar ApplicationRef
 import {
   FormBuilder,
   FormGroup,
@@ -7,31 +7,51 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
+import {
+  IonContent,
+  IonItem,
+  IonLabel,
+  IonInput,
+  IonButton,
+  IonAlert,
+  IonSpinner,
+  IonToolbar,
+  IonTitle,
+  IonHeader,
+  IonList,
+} from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-register',
   standalone: true,
   host: { class: 'ion-page' }, // <-- AGREGAR
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    IonLabel,
+    IonInput,
+    IonButton,
+    IonItem,
+    IonAlert,
+    IonSpinner,
+  ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent implements OnInit, OnDestroy {
-  // Implementa OnInit, OnDestroy
-  // ... tu código ...
-
   form: FormGroup;
-  error: string | null = null;
   isLoading = false;
+  showAlert: boolean = false;
+  alertMessage: string = '';
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private snackbarService: SnackbarService,
-    private authService: AuthService
+    private authService: AuthService,
+    private appRef: ApplicationRef // Inyectar ApplicationRef
   ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -49,33 +69,45 @@ export class RegisterComponent implements OnInit, OnDestroy {
   ngOnInit() {
     console.log('RegisterComponent: ngOnInit');
   }
+
   async onSubmit(): Promise<void> {
-    this.error = null;
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.alertMessage = 'Por favor, completa todos los campos correctamente.';
+      this.showAlert = true;
+      return;
+    }
 
     const { email, password, confirmPassword } = this.form.value;
     if (password !== confirmPassword) {
-      this.error = 'Las contraseñas no coinciden.';
+      this.alertMessage = 'Las contraseñas no coinciden.';
+      this.showAlert = true;
       return;
     }
 
     this.isLoading = true;
+    this.showAlert = false;
+
     try {
       this.form.disable();
       const result = await this.authService.signUp(email, password);
-      this.snackbarService.showMessage(
-        `¡Registro exitoso! Verifica tu email: ${email}`,
-        'success'
-      );
-      (document.activeElement as HTMLElement | null)?.blur();
-      // CAMBIO: Añade /auth/ a la navegación
-      this.router.navigate(['/auth/login']);
+      // Podrías usar Ion-toast o un Ion-alert para mostrar un mensaje de éxito
+      this.alertMessage = '¡Registro exitoso! Ahora puedes iniciar sesión.';
+      this.showAlert = true;
+
+      await this.router.navigate(['/auth/login']);
+      this.appRef.tick();
     } catch (error: any) {
-      this.error = error.message || 'Error en el registro';
+      this.alertMessage =
+        error.message || 'Error en el registro. Intenta nuevamente.';
+      this.showAlert = true;
     } finally {
       this.form.enable();
       this.isLoading = false;
     }
+  }
+
+  onAlertDismiss() {
+    this.showAlert = false;
   }
 
   ngOnDestroy() {

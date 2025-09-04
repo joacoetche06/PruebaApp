@@ -2,12 +2,22 @@
 import { Injectable } from '@angular/core';
 import { SupabaseService } from './supabase.service';
 import { Router } from '@angular/router';
+import { SnackbarService } from './snackbar/snackbar.service';
+import { Subject } from 'rxjs'; // Importar Subject
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private supabase: SupabaseService, private router: Router) {}
+  // Crear un Subject para emitir cambios de estado de autenticación
+  private authState = new Subject<'SIGNED_IN' | 'SIGNED_OUT'>();
+  public authState$ = this.authState.asObservable();
+
+  constructor(
+    private supabase: SupabaseService,
+    private router: Router,
+    private snackbarService: SnackbarService
+  ) {}
 
   async signUp(email: string, password: string): Promise<any> {
     try {
@@ -47,12 +57,15 @@ export class AuthService {
 
       console.log('Authentication successful:', data);
 
-      // Guardar sesión en localStorage
       if (data.session) {
         localStorage.setItem('auth_token', data.session.access_token);
         localStorage.setItem('user', JSON.stringify(data.user));
         console.log('Session saved to localStorage');
+
+        // Emitir el evento de inicio de sesión
+        this.authState.next('SIGNED_IN');
       }
+      this.snackbarService.showMessage('Sesión iniciada con éxito!', 'success');
 
       return data;
     } catch (error) {
@@ -61,25 +74,18 @@ export class AuthService {
     }
   }
 
-  // Cerrar sesión
-  async signOut(): Promise<void> {
-    try {
-      const { error } = await this.supabase.auth.signOut();
-      if (error) {
-        console.error('Sign out error:', error);
-        throw error;
-      }
+  async signOut() {
+    await this.supabase.client.auth.signOut(); // Usar await aquí
 
-      // Limpiar localStorage
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('user');
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user');
+    this.snackbarService.showMessage('Sesión cerrada con exito!', 'success');
 
-      console.log('User signed out successfully');
-      this.router.navigate(['/login']);
-    } catch (error) {
-      console.error('Error in signOut:', error);
-      throw error;
-    }
+    // Emitir el evento de cierre de sesión
+    this.authState.next('SIGNED_OUT');
+
+    // ELIMINAR LA NAVEGACIÓN DE AQUÍ
+    // this.router.navigate(['/']);
   }
 
   // Verificar si el usuario está autenticado

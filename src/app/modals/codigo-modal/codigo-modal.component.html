@@ -1,0 +1,15 @@
+<h2 class="titulo-modal">Ingreso de código</h2>
+
+<div class="contenido-modal">
+  <input
+    [(ngModel)]="codigo"
+    placeholder="Código de acceso"
+    type="password"
+    class="input-codigo"
+  />
+</div>
+
+<div class="botones-modal">
+  <button mat-button color="primary" (click)="enviar()">Aceptar</button>
+  <button mat-button (click)="cerrar()">Cancelar</button>
+</div>

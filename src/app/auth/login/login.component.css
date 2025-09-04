@@ -8,6 +8,12 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+h2 {
+  text-align: center;
+  color: #c62828;
+  margin: 0;
+}
+
 ion-item {
   --padding-start: 0;
   --inner-padding-end: 0;
@@ -32,4 +38,13 @@ ion-button[disabled] {
 .register-link a {
   color: #c62828;
   text-decoration: underline;
+}
+
+.quick-login-buttons {
+  display: flex;
+}
+
+.quick-login-buttons ion-button {
+  width: 33%;
+  font-size: 0.8rem;
 }

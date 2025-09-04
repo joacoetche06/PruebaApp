@@ -1,0 +1,43 @@
+.home-container {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+h2 {
+  text-align: center;
+  color: #c62828;
+  margin: 0;
+  margin-bottom: 20px;
+}
+
+p {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+ion-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  margin-bottom: 16px;
+  --background: transparent;
+}
+
+ion-label {
+  color: #555;
+}
+
+ion-button {
+  --background: #c62828;
+  --background-hover: #b71c1c;
+  --color: #ffffff;
+  --border-radius: 8px;
+  --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  height: 48px;
+  font-weight: bold;
+  text-transform: none;
+}

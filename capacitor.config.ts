@@ -1,5 +1,3 @@
-// capacitor.config.ts
-
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
@@ -11,14 +9,11 @@ const config: CapacitorConfig = {
       // Muestra el splash screen durante 3 segundos como mínimo.
       launchShowDuration: 3000,
       launchAutoHide: false,
-      backgroundColor: '#4748a6',
-      androidSplashResourceName: 'splash',
-      androidScaleType: 'CENTER',
+      androidScaleType: 'FIT_CENTER',
+      // Usar solo las propiedades necesarias para el sistema moderno.
+      // El color de fondo y el tipo de escala ahora se definen en styles.xml
+      // androidSplashResourceName: 'my_splash',
       showSpinner: true,
-      splashFullScreen: false,
-      splashImmersive: false,
-      useDialog: false,
-      layoutName: 'launch_screen',
       androidSpinnerStyle: 'large',
       iosSpinnerStyle: 'small',
       spinnerColor: '#999999',

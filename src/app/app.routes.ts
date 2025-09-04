@@ -2,17 +2,17 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './guard/auth.guard';
 import { AuthLayoutComponent } from './auth/layout/layout.component';
+import { AuthenticatedLayoutComponent } from './layouts/authenticated-layout.component'; // 1. IMPORTAR
 
 export const routes: Routes = [
   {
     path: '',
-    // CAMBIO: La ruta raíz ahora redirige directamente a la página de login.
     redirectTo: 'auth/login',
     pathMatch: 'full',
   },
   {
     path: 'auth',
-    component: AuthLayoutComponent, // Carga el layout
+    component: AuthLayoutComponent,
     children: [
       {
         path: 'login',
@@ -28,37 +28,51 @@ export const routes: Routes = [
       },
     ],
   },
+  // 2. CREAR UNA RUTA PADRE PARA LAS PÁGINAS AUTENTICADAS
   {
-    path: 'tabs',
-    loadComponent: () =>
-      import('./tabs/tabs.component').then((m) => m.TabsComponent),
-    canActivate: [AuthGuard],
+    path: '', // Usamos una ruta vacía para que las URLs no sean /app/home
+    component: AuthenticatedLayoutComponent,
+    canActivate: [AuthGuard], // El guard protege todo el layout
     children: [
       {
-        path: 'tab1',
+        path: 'home',
         loadComponent: () =>
-          import('./tabs/tab1/tab1.component').then((m) => m.Tab1Page),
+          import('./components/home/home.component').then(
+            (m) => m.HomeComponent
+          ),
       },
+      // 3. DESCOMENTAR Y MOVER TABS AQUÍ DENTRO
       {
-        path: 'tab2',
+        path: 'tabs',
         loadComponent: () =>
-          import('./tabs/tab2/tab2.component').then((m) => m.Tab2Page),
-      },
-      {
-        path: 'tab3',
-        loadComponent: () =>
-          import('./tabs/tab3/tab3.component').then((m) => m.Tab3Page),
-      },
-
-      {
-        path: '',
-        redirectTo: 'tab1',
-        pathMatch: 'full',
+          import('./tabs/tabs.component').then((m) => m.TabsComponent),
+        children: [
+          {
+            path: 'tab1',
+            loadComponent: () =>
+              import('./tabs/tab1/tab1.component').then((m) => m.Tab1Page),
+          },
+          {
+            path: 'tab2',
+            loadComponent: () =>
+              import('./tabs/tab2/tab2.component').then((m) => m.Tab2Page),
+          },
+          {
+            path: 'tab3',
+            loadComponent: () =>
+              import('./tabs/tab3/tab3.component').then((m) => m.Tab3Page),
+          },
+          {
+            path: '',
+            redirectTo: 'tab1',
+            pathMatch: 'full',
+          },
+        ],
       },
     ],
   },
   {
     path: '**',
-    redirectTo: 'auth/login', // Cualquier otra cosa, a login
+    redirectTo: 'auth/login',
   },
 ];

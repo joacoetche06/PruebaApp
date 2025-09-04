@@ -1,0 +1,12 @@
+<ion-content class="ion-padding">
+  <div class="home-container">
+    <h2>¡Bienvenido!</h2>
+    <p>Has iniciado sesión correctamente.</p>
+    <ion-item *ngIf="userEmail">
+      <ion-label>
+        Email: <strong>{{ userEmail }}</strong>
+      </ion-label>
+    </ion-item>
+    <ion-button expand="block" (click)="logout()">Cerrar sesión</ion-button>
+  </div>
+</ion-content>

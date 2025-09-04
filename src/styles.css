@@ -1,1 +1,35 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  /* --bg-pattern: url("./assets/bg1.jpeg"); */
+  --primary: #b71c1c;
+  --primary-dark: #300000;
+  --accent: #00ff66;
+  --card-bg: rgba(0, 0, 0, 0.6);
+  --text-color: #ffffff;
+  --border-radius: 1rem;
+  --box-shadow: 0 0 1rem rgba(0, 0, 0, 0.7);
+}
+
+::ng-deep .mat-snack-bar-container.error {
+  background-color: #f44336;
+  color: white;
+}
+
+::ng-deep .mat-snack-bar-container.success {
+  background-color: #4caf50;
+  color: white;
+}
+
+.snackbar-success {
+  .mdc-snackbar__surface {
+    background-color: #4caf50 !important;
+    color: white !important;
+  }
+}
+
+.snackbar-error {
+  .mdc-snackbar__surface {
+    background-color: #f44336 !important;
+    color: white !important;
+  }
+}

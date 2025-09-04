@@ -1,18 +1,13 @@
 // app.component.ts
 
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { IonApp, IonRouterOutlet, Platform } from '@ionic/angular/standalone';
 import { SplashScreen } from '@capacitor/splash-screen';
-import {
-  Router,
-  NavigationStart,
-  NavigationEnd,
-  NavigationCancel,
-  NavigationError,
-} from '@angular/router';
+import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { homeOutline, listOutline, personOutline } from 'ionicons/icons';
-import { filter } from 'rxjs/operators';
+import { SupabaseService } from './services/supabase.service';
+import { AuthService } from './services/auth.service'; // Importar AuthService
 
 @Component({
   selector: 'app-root',
@@ -22,7 +17,13 @@ import { filter } from 'rxjs/operators';
   imports: [IonApp, IonRouterOutlet],
 })
 export class AppComponent {
-  constructor(private platform: Platform, public router: Router) {
+  constructor(
+    private platform: Platform,
+    private router: Router,
+    private supabase: SupabaseService,
+    private ngZone: NgZone,
+    private authService: AuthService // Inyectar AuthService
+  ) {
     this.initialize();
     addIcons({
       'home-outline': homeOutline,
@@ -30,22 +31,16 @@ export class AppComponent {
       'person-outline': personOutline,
     });
 
-    // --- INICIO DEL CÓDIGO DE DEPURACIÓN ---
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationStart) {
-        console.log('Router Event: NavigationStart', event.url);
-      }
-      if (event instanceof NavigationEnd) {
-        console.log('Router Event: NavigationEnd', event.url);
-      }
-      if (event instanceof NavigationCancel) {
-        console.log('Router Event: NavigationCancel', event);
-      }
-      if (event instanceof NavigationError) {
-        console.log('Router Event: NavigationError', event);
-      }
+    // Escuchar los eventos de nuestro servicio de autenticación
+    this.authService.authState$.subscribe((state) => {
+      this.ngZone.run(() => {
+        if (state === 'SIGNED_IN') {
+          this.router.navigate(['/home']);
+        } else if (state === 'SIGNED_OUT') {
+          this.router.navigate(['/auth/login']);
+        }
+      });
     });
-    // --- FIN DEL CÓDIGO DE DEPURACIÓN ---
   }
 
   async initialize() {
@@ -57,5 +52,4 @@ export class AppComponent {
       await SplashScreen.hide({ fadeOutDuration: 300 });
     }, 500);
   }
-  // ...existing code... }
 }

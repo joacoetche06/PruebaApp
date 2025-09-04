@@ -46,4 +46,15 @@
     (ionAlertDidDismiss)="onAlertDismiss()"
   >
   </ion-alert>
+  <div class="quick-login-buttons">
+    <ion-button *ngIf="showQuickLogin" (click)="quickLogin('user1')">
+      Ingreso rápido 1
+    </ion-button>
+    <ion-button *ngIf="showQuickLogin" (click)="quickLogin('user2')">
+      Ingreso rápido 2
+    </ion-button>
+    <ion-button *ngIf="showQuickLogin" (click)="quickLogin('user3')">
+      Ingreso rápido 3
+    </ion-button>
+  </div>
 </div>

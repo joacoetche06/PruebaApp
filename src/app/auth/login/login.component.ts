@@ -1,5 +1,5 @@
 // src/app/auth/login/login.component.ts
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, NgZone } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -19,11 +19,14 @@ import {
   IonSpinner,
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../../environments/environment';
+import { CodigoModalComponent } from '../../modals/codigo-modal/codigo-modal.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  host: { class: 'ion-page' }, // <-- AGREGAR ESTA LÍNEA
+  host: { class: 'ion-page' },
   imports: [
     IonItem,
     IonLabel,
@@ -44,12 +47,17 @@ export class LoginComponent implements OnInit, OnDestroy {
   alertMessage: string = '';
   isLoading: boolean = false;
   connectionTested: boolean = false;
-
+  email = '';
+  password = '';
+  quickLoginFlag: boolean = false;
+  showQuickLogin = environment.showQuickLogin;
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private supabaseService: SupabaseService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog,
+    private ngZone: NgZone
   ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -68,7 +76,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   async onSubmit() {
+    console.log('onSubmit triggered.');
     if (this.form.invalid) {
+      console.log('Form is invalid.');
       this.alertMessage = 'Por favor, completa todos los campos';
       this.showAlert = true;
       return;
@@ -80,12 +90,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     const { email, password } = this.form.value;
 
     try {
-      // Deshabilita controles correctamente (evita binding [disabled] directo)
       this.form.disable();
-
-      const result = await this.authService.signIn(email, password);
-      this.router.navigate(['/tabs/tab1']);
+      console.log('Attempting signIn...');
+      // Solo llamamos al servicio. La navegación se gestiona en AppComponent.
+      await this.authService.signIn(email, password);
+      console.log(
+        'signIn successful. Navigation will be handled by AppComponent.'
+      );
     } catch (error: any) {
+      console.error('Authentication error:', error);
       this.alertMessage =
         error.message || 'Error al iniciar sesión. Intenta nuevamente.';
       this.showAlert = true;
@@ -101,5 +114,42 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     console.log('LoginComponent: ngOnDestroy');
+  }
+
+  async quickLogin(userKey: string) {
+    const dialogRef = this.dialog.open(CodigoModalComponent);
+    this.quickLoginFlag = true;
+
+    const codigo = await dialogRef.afterClosed().toPromise();
+
+    if (codigo === '2111') {
+      let email = '';
+      let password = '';
+
+      switch (userKey) {
+        case 'user1':
+          email = 'test@example.com';
+          password = 'Test123456';
+          break;
+        case 'user2':
+          email = 'test2@example.com';
+          password = 'Password2';
+          break;
+        case 'user3':
+          email = 'test3@example.com';
+          password = 'Password3';
+          break;
+        default:
+          alert('Clave de usuario inválida.');
+          return;
+      }
+
+      this.form.patchValue({ email, password });
+      this.quickLoginFlag = false;
+
+      await this.onSubmit();
+    } else if (codigo) {
+      alert('Código incorrecto');
+    }
   }
 }
